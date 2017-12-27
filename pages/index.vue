@@ -218,7 +218,7 @@ export default {
   margin-left: -20px;
   top: 0;
   position: fixed;
-  filter: blur(10%);
+  filter: blur(5px);
   z-index: -10;
 }
 .calendar-month {
