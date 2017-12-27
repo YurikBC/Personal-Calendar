@@ -1,16 +1,20 @@
 <template>
   <section class='calendar'>
+    <img class="background" src="../static/img/well.jpg"/>
     <div class='calendar-month__tooltip'>
-      <tooltip :tooltip="tooltip"></tooltip>
+      <tooltip :tooltip="tooltip" v-show="this.tooltip"></tooltip>
     </div>
     <div class='calendar-month' v-for='month in getMonth'>
-      <div class='calendar-month__title'>{{month.title}}</div>
+      <div class='calendar-month__title' :ref=month.title>{{month.title}}</div>
       <div class='calendar-month__container' :style="setBackgroundImage(month)">
         <div class='calendar-month__list'
              v-for='index in getAbsoluteDaysOfMonth(month)'>
           <div class='calendar-month__list-inner' v-if="index <= month.daysToMonday"></div>
           <div class='calendar-month__list-inner' v-if="index > month.daysToMonday"
-               :class='{active: isCelebrate(month, index - month.daysToMonday)}'
+               :class='[
+                 {active: isCelebrate(month, index - month.daysToMonday)},
+                 {today: isDayToday(month, index - month.daysToMonday)}
+                 ]'
                @mouseleave='closeTooltip'
                @mouseover='openTooltip(month, index - month.daysToMonday)'>
             {{index - month.daysToMonday}} <p>{{getDaysOfWeek(index - month.daysToMonday, month)}}</p>
@@ -40,7 +44,7 @@ import December from '../static/img/12.jpg'
 export default {
   data () {
     return {
-      tooltip: 'sccdssdc',
+      tooltip: '',
       dayOfMonth: 31,
       monthArray: [
         {
@@ -163,6 +167,17 @@ export default {
         }
       }
     },
+    isDayToday (month, day) {
+      let d = new Date()
+      let currentMonth = d.getMonth()
+      let currentDay = d.getUTCDate()
+      if (this.indexOfMonth(month.title) === currentMonth) {
+        if (day === currentDay) {
+          return true
+        }
+      }
+      return false
+    },
     openTooltip (month, day) {
       let index = this.indexOfMonth(month.title)
       let currentMonthCelebration = this.celebrationDays[index]
@@ -170,7 +185,7 @@ export default {
         let i
         for (i in currentMonthCelebration.days) {
           if (currentMonthCelebration.days[i].number === day) {
-            this.tooltip = currentMonthCelebration.days[i].description
+            this.tooltip = currentMonthCelebration.days[i]
           }
           i++
         }
@@ -179,16 +194,39 @@ export default {
     closeTooltip () {
       this.tooltip = ''
     }
+  },
+  mounted () {
+    setTimeout(() => {
+      let d = new Date()
+      let n = d.getMonth()
+      let el = this.$refs[this.monthArray[n].title][0]
+      el.scrollIntoView()
+    }, 500)
   }
 }
 </script>
 
 <style>
+::-webkit-scrollbar {
+  display: none;
+}
+.calendar {
+  overflow-X: hidden;
+}
+.background {
+  margin-top: -200px;
+  margin-left: -20px;
+  top: 0;
+  position: fixed;
+  filter: blur(10%);
+  z-index: -10;
+}
 .calendar-month {
   width: 580px;
   margin: 50px auto;
   display: flex;
   flex-direction: column;
+  z-index: 10;
 }
 .calendar-month__list {
   display: flex;
@@ -212,25 +250,31 @@ export default {
   right: 1.5px;
   position: absolute;
   border-radius: 50%;
+  color: black;
 }
 
 .calendar-month__list .active {
   cursor: pointer;
+  z-index: 10;
   background: -webkit-linear-gradient(top, rgba(255,255,255,0.4) 0%,rgba(255,255,255,0.6) 100%);
+}
+.today {
+  border: 1px solid red;
+  background: -webkit-linear-gradient(top, rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.9) 100%);
 }
 
 .calendar-month__title {
+  z-index: 10;
   margin-bottom: 10px;
   text-align: center;
 }
 .calendar-month__container {
   display: flex;
   flex-wrap: wrap;
+  z-index: 10;
 }
 
 .calendar-month__tooltip {
   position: fixed;
-  left: 200px;
-  font-size: 20px;
 }
 </style>
