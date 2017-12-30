@@ -1,9 +1,15 @@
 <template>
   <section class='calendar'>
     <img class="background" src="../static/img/well.jpg"/>
-    <div class='calendar-month__tooltip'>
-      <tooltip :tooltip="tooltip" v-show="this.tooltip"></tooltip>
-    </div>
+    <transition name="fade">
+      <div class='calendar-month__tooltip'
+           v-show="tooltipState"
+           :style="setTransition"
+           @mouseover="catchTooltip"
+           @mouseleave="closeTooltip('true')">
+            <tooltip :tooltip="tooltip"></tooltip>
+      </div>
+    </transition>
     <div class='calendar-month' v-for='month in getMonth'>
       <div class='calendar-month__title' :ref=month.title>{{month.title}}</div>
       <div class='calendar-month__container' :style="setBackgroundImage(month)">
@@ -40,11 +46,20 @@ import September from '../static/img/9.jpg'
 import October from '../static/img/10.jpg'
 import November from '../static/img/11.jpg'
 import December from '../static/img/12.jpg'
+//  import storage from '../static/storageService'
+//  import getConstants from '../static/cosntants'
+//  const {
+//  token
+//  } = getConstants
 
 export default {
   data () {
     return {
+      transitionTime: 0.5,
       tooltip: '',
+      tooltipState: false,
+      save: false,
+      opened: false,
       dayOfMonth: 31,
       monthArray: [
         {
@@ -132,6 +147,11 @@ export default {
         }
       })
       return this.monthArray
+    },
+    setTransition () {
+      return {
+        transition: `${this.transitionTime}s`
+      }
     }
   },
   methods: {
@@ -186,16 +206,25 @@ export default {
         for (i in currentMonthCelebration.days) {
           if (currentMonthCelebration.days[i].number === day) {
             this.tooltip = currentMonthCelebration.days[i]
+            this.transitionTime = 1
+            this.tooltipState = true
           }
           i++
         }
       }
     },
-    closeTooltip () {
-      this.tooltip = ''
+    closeTooltip (bool) {
+      this.tooltipState = false
+      if (bool === 'true') {
+        this.tooltipState = false
+      }
+    },
+    catchTooltip () {
+      this.tooltipState = true
     }
   },
   mounted () {
+    this.$store.state.alert += 1
     setTimeout(() => {
       let d = new Date()
       let n = d.getMonth()
@@ -222,11 +251,10 @@ export default {
   z-index: -10;
 }
 .calendar-month {
-  width: 580px;
+  width: 35%;
   margin: 50px auto;
   display: flex;
   flex-direction: column;
-  z-index: 10;
 }
 .calendar-month__list {
   display: flex;
@@ -271,10 +299,17 @@ export default {
 .calendar-month__container {
   display: flex;
   flex-wrap: wrap;
-  z-index: 10;
 }
 
 .calendar-month__tooltip {
   position: fixed;
+}
+
+.fade-enter-active {
+  transition: 0.35s;
+  opacity: 1;
+}
+.fade-enter {
+  opacity: 0
 }
 </style>

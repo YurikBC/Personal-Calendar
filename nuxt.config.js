@@ -21,6 +21,7 @@ module.exports = {
   /*
   ** Build configuration
   */
+  plugins: [{ src: '~/plugins/localStorage.js', ssr: false }],
   build: {
     /*
     ** Run ESLint on save
