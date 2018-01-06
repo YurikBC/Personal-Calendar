@@ -1,14 +1,17 @@
 <template>
-  <div class="security">
+  <section class="security">
     <div class="security__container">
       <div class="security__caption">Enter the password</div>
       <div class="security__input">
-        <input type="text" v-model="inputValue" placeholder="Enter here">
+        <input type="password"
+               v-model="formPassword"
+               @keyup.enter="submitPassword"
+               placeholder="Enter here">
         <div class="button" @click="submitPassword">Submit</div>
       </div>
       <div class="error">{{textError}}</div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script>
@@ -21,25 +24,30 @@ const {
 export default {
   data () {
     return {
-      inputValue: '',
+      formPassword: '',
       textError: ''
     }
   },
   methods: {
-    submitPassword () {
-      if (this.inputValue === password) {
-        storage('token', token)
+    async submitPassword () {
+      try {
+        await this.$store.dispatch('login', {
+          password: this.formPassword
+        })
+        this.formPassword = ''
         this.$router.push('/')
-      } else {
+      } catch (e) {
         this.validateError()
       }
     },
-    validateError () {
-      if (this.inputValue.length < 3) {
+    validateError (e) {
+      if (this.formPassword.length < 3) {
         this.textError = 'Too short password'
       }
-      if (this.inputValue !== password) {
-        this.textError = 'Wrong password'
+      if (this.formPassword !== password) {
+        if (e) {
+          this.textError = 'Wrong password'
+        }
       }
     }
   }

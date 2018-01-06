@@ -17,15 +17,15 @@
       <h3>Первый год празднования:</h3>
       <p>{{tooltip.year}}</p>
     </div>
+    <div class="tooltip__feedback" v-show="tooltip.feedback">
+      <h3>Фидбек:</h3>
+      <p v-for="(feed, key) in tooltip.feedback">{{ key }} - {{ feed }}</p>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  data () {
-    return {
-    }
-  },
   props: ['tooltip']
 }
 </script>

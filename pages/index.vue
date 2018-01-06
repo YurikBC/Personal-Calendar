@@ -224,7 +224,9 @@ export default {
     }
   },
   mounted () {
-    this.$store.state.alert += 1
+    if (!this.$store.state.authUser.username) {
+      this.$router.push('/security')
+    }
     setTimeout(() => {
       let d = new Date()
       let n = d.getMonth()
