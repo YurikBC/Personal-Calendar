@@ -3,7 +3,6 @@ import Vuex from 'vuex'
 import axios from 'axios'
 
 Vue.use(Vuex)
-require('whatwg-fetch')
 
 const store = () => new Vuex.Store({
   state: {
@@ -16,27 +15,13 @@ const store = () => new Vuex.Store({
   },
   actions: {
     login ({ commit }, { password }) {
-    return fetch('/api/login', {
-      credentials: 'same-origin',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        password
-      })
-    })
-    .then((res) => {
-    if (res.status === 401) {
-      throw new Error('Bad credentials')
-    } else {
-      return res.json()
+    if (password = 'demo') {
+      let user = {}
+      user.password = password
+      user.username = 'yuriy'
+      commit('SET_USER', user)
+      axios.get('/')
     }
-  })
-    .then((authUser) => {
-        console.log(authUser)
-        commit('SET_USER', authUser)
-    })
     },
     async logout ({ commit }) {
       await axios.post('/api/logout')

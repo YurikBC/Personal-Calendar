@@ -54,6 +54,7 @@ import December from '../static/img/12.jpg'
 
 export default {
   fetch ({ store, redirect }) {
+    console.log(store.state.authUser.username)
     if (!store.state.authUser.username) {
       return redirect('/security')
     }
@@ -234,7 +235,7 @@ export default {
       let n = d.getMonth()
       let el = this.$refs[this.monthArray[n].title][0]
       el.scrollIntoView()
-    }, 500)
+    }, 300)
   }
 }
 </script>
