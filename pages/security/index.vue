@@ -15,8 +15,7 @@
 </template>
 
 <script>
-import getConstants from '../static/cosntants'
-import storage from '../static/storageService'
+import getConstants from '../../static/cosntants'
 const {
   password,
   token

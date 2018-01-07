@@ -53,6 +53,11 @@ import December from '../static/img/12.jpg'
 //  } = getConstants
 
 export default {
+  fetch ({ store, redirect }) {
+    if (!store.state.authUser.username) {
+      return redirect('/security')
+    }
+  },
   data () {
     return {
       transitionTime: 0.5,
@@ -224,9 +229,6 @@ export default {
     }
   },
   mounted () {
-    if (!this.$store.state.authUser.username) {
-      this.$router.push('/security')
-    }
     setTimeout(() => {
       let d = new Date()
       let n = d.getMonth()
