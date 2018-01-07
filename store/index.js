@@ -15,12 +15,6 @@ const store = () => new Vuex.Store({
     }
   },
   actions: {
-    async nuxtServerInit ({ commit }, { req }) {
-      console.log(req.session.authUser)
-      if (req.session && req.session.authUser) {
-        commit('SET_USER', req.session.authUser)
-      }
-    },
     login ({ commit }, { password }) {
     return fetch('/api/login', {
       credentials: 'same-origin',
